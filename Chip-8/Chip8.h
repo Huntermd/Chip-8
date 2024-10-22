@@ -20,7 +20,7 @@ public:
 
 private:
     uint8_t Memory[4096];
-    uint16_t V[16];
+    uint8_t V[16];
     uint16_t I = 0;
     uint16_t Stack[16];
     uint16_t sp = 0;

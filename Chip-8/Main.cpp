@@ -35,7 +35,7 @@ int WinMain() {
 
     uint32_t pixels[2048];
 	
-	if (chip8.load("1-chip8-logo.ch8")) {
+	if (chip8.load("2-ibm-logo.ch8")) {
 		for (int i = 0; i < 39; i++)
 		{
 			chip8.execution_cycle();

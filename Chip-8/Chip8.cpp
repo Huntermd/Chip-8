@@ -136,6 +136,11 @@ void Chip8::execution_cycle() {
         Pc = opcode & 0x0FFF;
         break;
     }
+    case 0x7000: {
+        V[(opcode & 0x0F00) >> 8] += (opcode & 0x00FF);
+        Pc += 2;
+        break;
+    }
     case 0xD000:
     {
         std::cout << "The big D" << '\n';

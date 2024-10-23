@@ -9,6 +9,7 @@ public:
     bool drawFlag;
     bool load(const char *fileName);
     void TestLoop();
+    uint8_t Display[64 * 32];
     
     Chip8();
     ~Chip8();
@@ -21,10 +22,10 @@ public:
 private:
     uint8_t Memory[4096];
     uint8_t V[16];
-    uint16_t I = 0;
+    uint16_t I ;
     uint16_t Stack[16];
-    uint16_t sp = 0;
-    uint8_t Display[64 * 32];
+    uint16_t sp ;
+    
     uint8_t DelayTimer = 0;
     uint8_t SoundTimer = 0;
     uint8_t  key[16];

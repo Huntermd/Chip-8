@@ -107,7 +107,7 @@ void Chip8::execution_cycle() {
         case 0x000E://Return from subroutine 
             sp--;
             Pc = Stack[sp];
-            Pc += 2;
+            
             break;
         default:
             break;
@@ -116,7 +116,7 @@ void Chip8::execution_cycle() {
     }
     case 0x6000://Loads VX with NN
     {
-        std::cout << " Loads VX with NN: " << ((opcode & 0x0F00) >> 8) << '\n';
+        std::cout << " Loads VX with NN: " << ((opcode & 0x00FF) >> 8) << '\n';
          
         V[(opcode & 0x0F00) >> 8] = opcode & 0x00FF;
         Pc += 2;
@@ -140,15 +140,15 @@ void Chip8::execution_cycle() {
     {
         std::cout << "The big D" << '\n';
         V[0xf] = 0;
-        unsigned short x = V[opcode & 0x0F00 >> 8];
-        unsigned short y = V[opcode & 0x00F0 >> 4];
-        unsigned short height = V[opcode & 0x000F];
+        unsigned short x = V[(opcode & 0x0F00) >> 8];
+        unsigned short y = V[(opcode & 0x00F0) >> 4];
+        unsigned short height = opcode & 0x000F;
         unsigned short pixels;
         for (int y_axis = 0; y_axis < height; y_axis++) {
             pixels = Memory[I + y_axis];
             for (int x_axis = 0; x_axis < 8; x_axis++) {
-                if ((pixels & (0x8 >> y_axis)) != 0) {
-                    if (Display[(x + x_axis + ((y + y_axis) * 64))] == 1)
+                if ((pixels & (0x80 >> x_axis)) != 0) {
+                    if (Display[x + x_axis + ((y + y_axis) * 64)] == 1)
                     {
                         V[0xF] = 1;
                     }

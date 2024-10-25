@@ -22,9 +22,9 @@ public:
 private:
     uint8_t Memory[4096];
     uint8_t V[16];
-    uint16_t I ;
+    uint16_t I;
     uint16_t Stack[16];
-    uint16_t sp ;
+    uint16_t sp;
     
     uint8_t DelayTimer = 0;
     uint8_t SoundTimer = 0;

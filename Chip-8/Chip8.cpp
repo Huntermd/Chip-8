@@ -107,7 +107,7 @@ void Chip8::execution_cycle() {
         case 0x000E://Return from subroutine 
             sp--;
             Pc = Stack[sp];
-            
+            Pc += 2;
             break;
         default:
             break;
@@ -136,10 +136,93 @@ void Chip8::execution_cycle() {
         Pc = opcode & 0x0FFF;
         break;
     }
+    case 0x2000: {
+        Stack[sp] = Pc;
+        sp++;
+        Pc = opcode & 0x0FFF;
+        break;
+    }
+    case 0x3000:{
+        if (V[(opcode & 0x0F00) >> 8] == (opcode & 0x00FF)) {
+            Pc += 4;
+            break;
+        }
+        else {
+            Pc += 2;
+            break;
+        }
+    }
+    case 0x4000: {
+        if (V[(opcode & 0x0F00) >> 8] != (opcode & 0x00FF)) {
+            Pc += 4;
+            break;
+        }else {
+            Pc += 2;
+            break;
+        }
+    }
+    case 0x5000: {
+        if (V[(opcode & 0x0F00) >> 8] == V[(opcode & 0x00F0) >> 4]) {
+            Pc += 4;
+            break;
+        }
+        else {
+            Pc += 2;
+            break;
+        }
+    }
     case 0x7000: {
         V[(opcode & 0x0F00) >> 8] += (opcode & 0x00FF);
         Pc += 2;
         break;
+    }
+    case 0x8000: {
+        switch (opcode & 0x000F) {
+        case 0x0000: {
+            V[(opcode & 0x0F00) >> 8] = V[(opcode & 0x00F0) >> 4];
+            Pc += 2;
+            break;
+        }
+        case 0x0001: {
+            V[(opcode & 0x0F00) >> 8] |= V[(opcode & 0x00F0) >> 4];
+            Pc += 2;
+            break;
+        }
+        case 0x0002: {
+            V[(opcode & 0x0F00) >> 8] &= V[(opcode & 0x00F0) >> 4];
+            Pc += 2;
+            break;
+        }
+        case 0x0003: {
+            V[(opcode & 0x0F00) >> 8] ^= V[(opcode & 0x00F0) >> 4];
+            Pc += 2;
+            break;
+        }
+        case 0x0004: {
+            break;
+        }
+        case 0x0005: {
+            break;
+        }
+        case 0x0006: {
+            break;
+        }
+        case 0x000E: {
+            break;
+        }
+        default:
+            break;
+        }
+    }
+    case 0x9000: {
+            if (V[(opcode & 0x0F00) >> 8] != V[(opcode & 0x00F0) >> 4]) {
+                Pc += 4;
+                break;
+            }
+            else {
+                Pc += 2;
+                break;
+            }
     }
     case 0xD000:
     {

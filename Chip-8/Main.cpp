@@ -35,8 +35,8 @@ int WinMain() {
 
     uint32_t pixels[2048];
 	
-	if (chip8.load("2-ibm-logo.ch8")) {
-		for (int i = 0; i < 39; i++)
+	if (chip8.load("3-corax+.ch8")) {
+		for (int i = 0; i < 1000; i++)
 		{
 			chip8.execution_cycle();
             if (chip8.drawFlag) {

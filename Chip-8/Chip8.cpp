@@ -199,20 +199,53 @@ void Chip8::execution_cycle() {
             break;
         }
         case 0x0004: {
+            V[(opcode & 0x0F00) >> 8] += V[(opcode & 0x00F0) >> 4];
+            if (V[(opcode & 0x0F00)] > V[(opcode & 0x00F0) >> 4]) {
+                V[0xF] = 01;
+            }else {
+                V[0xF] = 00;
+            }
+            Pc += 2;
             break;
         }
         case 0x0005: {
+            if (V[(opcode & 0x0F00) >> 8] >= V[(opcode & 0x00F0) >> 4]) {
+                V[0xF] = 00;
+            }
+            else {
+                V[0xF] = 01;
+            }
+            V[(opcode & 0x0F00) >> 8] -= V[(opcode & 0x00F0) >> 4];
+            Pc += 2;
             break;
         }
         case 0x0006: {
+            V[0xF] = V[(opcode & 0x0F00) >> 8] & 0x01;
+            V[(opcode & 0x0F00) >> 8] >>= 1;
+            Pc += 2;
+            break;
+        }
+        case 0x0007: {
+            if (V[(opcode & 0x0F00) >> 8] >= V[(opcode & 0x00F0) >> 4]) {
+                V[0xF] = 00;
+            }
+            else {
+                V[0xF] = 01;
+            }
+            V[(opcode & 0x0F00) >> 8] = V[(opcode & 0x00F0) >> 4] - V[(opcode & 0x0F00) >> 8];
+            Pc += 2;
             break;
         }
         case 0x000E: {
+            V[0xF] = V[(opcode & 0x0F00) >> 8] >> 7;
+            V[(opcode & 0x0F00) >> 8] <<= 1;
+            Pc += 2;
             break;
         }
         default:
             break;
         }
+        break;
     }
     case 0x9000: {
             if (V[(opcode & 0x0F00) >> 8] != V[(opcode & 0x00F0) >> 4]) {
@@ -247,6 +280,56 @@ void Chip8::execution_cycle() {
         }
         drawFlag = true;
         Pc += 2;
+        break;
+    }
+    case 0xF000: {
+        switch (0x00FF){
+            case 0x0065: {
+                unsigned short x = V[(opcode & 0x0F00) >> 8];
+                for (int i = 0; i <= x; i++)
+                {
+                    V[i] = Memory[I + i];
+
+                }
+                I = I + x + 1;
+                Pc += 2;
+                break;
+            }
+            case 0x0055: {
+                unsigned short x = V[(opcode & 0x0F00) >> 8];
+                for (int i = 0; i <= x; i++)
+                {
+                    Memory[I + i] = V[i];
+                    
+
+                }
+                I = I + x + 1;
+                Pc += 2;
+                break;
+            }
+            case 0x0033: {
+                unsigned short x = V[(opcode & 0x0F00) >> 8];
+                Memory[I] = (x / 100) % 10;
+                Memory[I+1] = (x / 10) % 10;
+                Memory[I+2] = x % 10;
+                Pc += 2;
+                break;
+            }
+            case 0x001E: {
+                
+                if (I + V[(opcode & 0x0F00) >> 8] > 0xFFF)
+                    V[0xF] = 1;
+                else
+                    V[0xF] = 0;
+                I += V[(opcode & 0x0F00) >> 8];
+                Pc += 2;
+                break;
+            }
+            default:
+                std::cout << "opcode bad";
+
+                break;
+        }
         break;
     }
 

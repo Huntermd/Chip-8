@@ -53,7 +53,7 @@ int WinMain() {
                 // This will show the new, red contents of the window.
                 SDL_RenderPresent(render);//Updates the window
             }
-			std::this_thread::sleep_for(std::chrono::microseconds(5000));
+			std::this_thread::sleep_for(std::chrono::microseconds(1000));
 		}
 	}
     SDL_Delay(5000);

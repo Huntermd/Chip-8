@@ -212,16 +212,18 @@ void Chip8::execution_cycle() {
             break;
         }
         case 0x0005: {
+            
             uint8_t x = (opcode & 0x0F00) >> 8;
             uint8_t y = (opcode & 0x00F0) >> 4;
-            V[(opcode & 0x0F00) >> 8] = (V[x] - V[y]) & 0xFF;
-            if (V[y] > V[x]) {
+            bool carry = V[x] >= V[y];
+            V[x] = (V[x] - V[y]) & 0xFF;
+            if (carry) {
                 V[0xF] = 1;
             }
             else {
                 V[0xF] = 0;
             }
-            
+           
             Pc += 2;
             break;
         }

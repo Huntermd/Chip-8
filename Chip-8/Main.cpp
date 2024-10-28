@@ -35,7 +35,7 @@ int WinMain() {
 
     uint32_t pixels[2048];
 	
-	if (chip8.load("3-corax+.ch8")) {
+	if (chip8.load("4-flags.ch8")) {
 		for (int i = 0; i < 1000; i++)
 		{
 			chip8.execution_cycle();

@@ -199,23 +199,29 @@ void Chip8::execution_cycle() {
             break;
         }
         case 0x0004: {
-            V[(opcode & 0x0F00) >> 8] += V[(opcode & 0x00F0) >> 4];
-            if (V[(opcode & 0x0F00)] > V[(opcode & 0x00F0) >> 4]) {
+            uint8_t Vx = V[(opcode & 0x0F00) >> 8];
+            uint8_t Vy = V[(opcode & 0x00F0) >> 4];
+            V[(opcode & 0x0F00) >> 8] = (Vx + Vy) & 0xFF;
+            if ((Vx + Vy) > 0xFF){
                 V[0xF] = 01;
             }else {
                 V[0xF] = 00;
             }
+           
             Pc += 2;
             break;
         }
         case 0x0005: {
-            if (V[(opcode & 0x0F00) >> 8] >= V[(opcode & 0x00F0) >> 4]) {
-                V[0xF] = 00;
+            uint8_t x = (opcode & 0x0F00) >> 8;
+            uint8_t y = (opcode & 0x00F0) >> 4;
+            V[(opcode & 0x0F00) >> 8] = (V[x] - V[y]) & 0xFF;
+            if (V[y] > V[x]) {
+                V[0xF] = 1;
             }
             else {
-                V[0xF] = 01;
+                V[0xF] = 0;
             }
-            V[(opcode & 0x0F00) >> 8] -= V[(opcode & 0x00F0) >> 4];
+            
             Pc += 2;
             break;
         }
@@ -226,13 +232,16 @@ void Chip8::execution_cycle() {
             break;
         }
         case 0x0007: {
-            if (V[(opcode & 0x0F00) >> 8] >= V[(opcode & 0x00F0) >> 4]) {
-                V[0xF] = 00;
+            uint8_t x = (opcode & 0x0F00) >> 8;
+            uint8_t y = (opcode & 0x00F0) >> 4;
+            V[(opcode & 0x0F00) >> 8] = (V[y] - V[x]) & 0xFF;
+            if (V[y] > V[x]) {
+                V[0xF] = 1;
             }
             else {
-                V[0xF] = 01;
+                V[0xF] = 0;
             }
-            V[(opcode & 0x0F00) >> 8] = V[(opcode & 0x00F0) >> 4] - V[(opcode & 0x0F00) >> 8];
+           
             Pc += 2;
             break;
         }

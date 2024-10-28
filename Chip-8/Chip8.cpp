@@ -283,9 +283,9 @@ void Chip8::execution_cycle() {
         break;
     }
     case 0xF000: {
-        switch (0x00FF){
+        switch (opcode & 0x00FF){
             case 0x0065: {
-                unsigned short x = V[(opcode & 0x0F00) >> 8];
+                unsigned short x = (opcode & 0x0F00) >> 8;
                 for (int i = 0; i <= x; i++)
                 {
                     V[i] = Memory[I + i];
@@ -296,7 +296,7 @@ void Chip8::execution_cycle() {
                 break;
             }
             case 0x0055: {
-                unsigned short x = V[(opcode & 0x0F00) >> 8];
+                unsigned short x = (opcode & 0x0F00) >> 8;
                 for (int i = 0; i <= x; i++)
                 {
                     Memory[I + i] = V[i];
@@ -317,10 +317,6 @@ void Chip8::execution_cycle() {
             }
             case 0x001E: {
                 
-                if (I + V[(opcode & 0x0F00) >> 8] > 0xFFF)
-                    V[0xF] = 1;
-                else
-                    V[0xF] = 0;
                 I += V[(opcode & 0x0F00) >> 8];
                 Pc += 2;
                 break;

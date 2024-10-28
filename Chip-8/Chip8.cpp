@@ -228,8 +228,9 @@ void Chip8::execution_cycle() {
             break;
         }
         case 0x0006: {
-            V[0xF] = V[(opcode & 0x0F00) >> 8] & 0x01;
+            uint8_t ans = V[(opcode & 0x0F00) >> 8] & 0x01;
             V[(opcode & 0x0F00) >> 8] >>= 1;
+            V[0xF] = ans;
             Pc += 2;
             break;
         }
@@ -248,8 +249,9 @@ void Chip8::execution_cycle() {
             break;
         }
         case 0x000E: {
-            V[0xF] = V[(opcode & 0x0F00) >> 8] >> 7;
+            uint8_t ans = V[(opcode & 0x0F00) >> 8] >> 7;
             V[(opcode & 0x0F00) >> 8] <<= 1;
+            V[0xF] = ans;
             Pc += 2;
             break;
         }

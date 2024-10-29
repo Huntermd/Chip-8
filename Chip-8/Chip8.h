@@ -10,7 +10,7 @@ public:
     bool load(const char *fileName);
     void TestLoop();
     uint8_t Display[64 * 32];
-    
+    uint8_t  key[16];
     Chip8();
     ~Chip8();
 
@@ -28,7 +28,7 @@ private:
     
     uint8_t DelayTimer = 0;
     uint8_t SoundTimer = 0;
-    uint8_t  key[16];
+    
     uint16_t Pc;
     void init();
 };

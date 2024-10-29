@@ -53,15 +53,28 @@ int WinMain() {
 
     uint32_t pixels[2048];
     SDL_Event e;
+    bool ifTrue = true;
 	
-	if (chip8.load("5-quirks.ch8")) {
-		for (int i = 0; i < 1000; i++){
+	if (chip8.load("6-keypad.ch8")) {
+		while(ifTrue){
 			chip8.execution_cycle();
 
-            while (SDL_PollEvent(&e) != 0) {
-                if (e.type == SDL_QUIT) SDL_Quit();
+            while (SDL_PollEvent(&e)) {
+                if (e.type == SDL_QUIT) {
+                    SDL_Quit();
+                    ifTrue = false;
+                    break;
+                }
+                 
                 if (e.type == SDL_KEYDOWN) {
-                    if (e.key.keysym.sym == SDLK_ESCAPE) SDL_Quit();
+                    if (e.key.keysym.sym == SDLK_ESCAPE) {
+                        SDL_Quit();
+                        ifTrue = false;
+                        break;
+                    }
+                       
+                        
+                    
                     for (int i = 0; i < 16; i++){
                         if (e.key.keysym.sym == keymap[i]) {
                             chip8.key[i] = 1;}}

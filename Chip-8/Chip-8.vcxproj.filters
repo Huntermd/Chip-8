@@ -33,5 +33,6 @@
     <None Include="3-corax+.ch8" />
     <None Include="4-flags.ch8" />
     <None Include="5-quirks.ch8" />
+    <None Include="6-keypad.ch8" />
   </ItemGroup>
 </Project>

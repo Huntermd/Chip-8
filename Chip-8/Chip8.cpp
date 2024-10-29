@@ -2,7 +2,7 @@
 #include <string>
 #include <iostream>
 #include <fstream>
-
+#include <random>
 
 
 unsigned char FontSet[80] =
@@ -127,6 +127,15 @@ void Chip8::execution_cycle() {
     {
         std::cout << " Loads register I with NNN" << '\n';
         I = opcode & 0x0FFF;
+        Pc += 2;
+        break;
+    }
+    case 0xB000: {
+        Pc = (opcode & 0x0FFF) + V[0];
+        break;
+    }
+    case 0xC000: {
+        V[(opcode & 0x0F000) >> 8] = (rand() % (0xFF + 1)) & (opcode & 0x00FF);
         Pc += 2;
         break;
     }
@@ -297,6 +306,24 @@ void Chip8::execution_cycle() {
     }
     case 0xF000: {
         switch (opcode & 0x00FF){
+        case 0x000A: {
+            bool keyPressed = false;
+            for (int i = 0; i < 16; i++)
+            {
+                if (key[i] != 0) {
+                    V[(opcode & 0x0F00) >> 8] = i;
+                    keyPressed = true;
+                    
+                    
+                    
+                }
+
+            }//End of the loop
+            if (!keyPressed) return;
+            Pc += 2;
+           
+            break;
+        }
             case 0x0065: {
                 unsigned short x = (opcode & 0x0F00) >> 8;
                 for (int i = 0; i <= x; i++)
@@ -340,6 +367,34 @@ void Chip8::execution_cycle() {
                 break;
         }
         break;
+    }
+
+    case 0xE000: {
+        switch (opcode & 0x00FF) {
+        case 0x00A1: {
+            if (key[V[(opcode & 0x0F00) >> 8]] == 0) {
+                Pc += 4;
+                break;
+            }
+            else {
+                Pc += 2;
+                break;
+            }
+        }
+        case 0x009E: {
+            if (key[V[(opcode & 0x0F00) >> 8]] != 0){
+                Pc += 4;
+                break;
+            }
+            else {
+                Pc += 2;
+                break;
+            }
+        }
+        default: {
+            break;
+        }
+        }
     }
 
     default:

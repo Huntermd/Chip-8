@@ -82,7 +82,8 @@ int WinMain() {
 
                 if (e.type == SDL_KEYUP) {
                     for (int i = 0; i < 16; i++){
-                        if (e.key.keysym.sym == keymap[i])chip8.key[i] = 0;}
+                        if (e.key.keysym.sym == keymap[i])chip8.key[i] = 0;
+                    }
                 }//End of the SDL_KeyUp if Statement
 
             }
@@ -101,7 +102,7 @@ int WinMain() {
                 // This will show the new, red contents of the window.
                 SDL_RenderPresent(render);//Updates the window
         }// End of the DrawFlag if statement
-			std::this_thread::sleep_for(std::chrono::microseconds(1000));
+			std::this_thread::sleep_for(std::chrono::microseconds(3000));
 		}//End of the Execution Loop
 	}//End the loaded if statement
     SDL_Delay(5000);

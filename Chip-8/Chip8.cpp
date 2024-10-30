@@ -32,6 +32,7 @@ void Chip8::init() {
 	I = 0;
 	sp = 0;
     drawFlag = false;
+   
     for (int i = 0; i < 16; ++i) { //clear the stack
         Stack[i] = 0;
         V[i] = 0;
@@ -308,22 +309,27 @@ void Chip8::execution_cycle() {
         switch (opcode & 0x00FF){
         case 0x000A: {
             bool keyPressed = false;
+
             for (int i = 0; i < 16; i++)
             {
                 if (key[i] != 0) {
                     V[(opcode & 0x0F00) >> 8] = i;
                     keyPressed = true;
                     
-                    
-                    
                 }
 
             }//End of the loop
-            if (!keyPressed) return;
-            Pc += 2;
+            if (!keyPressed ) {
+                return;
+            } 
+            if (keyPressed) {
+                Pc += 2;
+            }
+            
            
             break;
         }
+                   
             case 0x0065: {
                 unsigned short x = (opcode & 0x0F00) >> 8;
                 for (int i = 0; i <= x; i++)
@@ -361,6 +367,26 @@ void Chip8::execution_cycle() {
                 Pc += 2;
                 break;
             }
+            case 0x0029: {
+                I = V[(opcode & 0x0F00) >> 8] * 0x5;
+                Pc += 2;
+                break;
+            }
+            case 0x0015:{
+                DelayTimer = V[(opcode & 0x0F00) >> 8];
+                Pc += 2;
+                break;
+            }
+            case 0x0007:{
+                V[(opcode & 0x0F00) >> 8] = DelayTimer;
+                Pc += 2;
+                break;
+            }
+            case 0x0018: {
+                SoundTimer = V[(opcode & 0x0F00) >> 8];
+                Pc += 2;
+                break;
+            }
             default:
                 std::cout << "opcode bad";
 
@@ -395,6 +421,7 @@ void Chip8::execution_cycle() {
             break;
         }
         }
+        break;
     }
 
     default:

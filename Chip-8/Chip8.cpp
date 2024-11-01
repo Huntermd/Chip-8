@@ -32,7 +32,7 @@ void Chip8::init() {
 	I = 0;
 	sp = 0;
     drawFlag = false;
-   
+
     for (int i = 0; i < 16; ++i) { //clear the stack
         Stack[i] = 0;
         V[i] = 0;
@@ -49,6 +49,16 @@ void Chip8::init() {
 
     for (int i = 0; i < 80; i++) {//Loads fonts into memory
         Memory[i] = FontSet[i];
+    }
+}
+
+void Chip8::updateTimers() {
+    if (DelayTimer > 0) {
+        DelayTimer--;
+    }
+
+    if (SoundTimer > 0) {
+        SoundTimer--;
     }
 }
 

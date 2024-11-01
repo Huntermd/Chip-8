@@ -52,14 +52,25 @@ int WinMain() {
         64, 32);
 
     uint32_t pixels[2048];
-    SDL_Event e;
+   
     bool ifTrue = true;
+    const int timerFrequency = 1000 / 60;
+
 	
 	if (chip8.load("6-keypad.ch8")) {
+        auto lastTimerUpdate = std::chrono::high_resolution_clock::now();
 		while(ifTrue){
+             SDL_Event e;
 			chip8.execution_cycle();
 
-            while (SDL_PollEvent(&e)) {
+            auto now = std::chrono::high_resolution_clock::now();
+            if (std::chrono::duration_cast<std::chrono::milliseconds>(now - lastTimerUpdate).count() >= timerFrequency) {
+                chip8.updateTimers();
+                lastTimerUpdate = now;
+
+            }
+
+            while (SDL_PollEvent(&e) != 0) {
                 if (e.type == SDL_QUIT) {
                     SDL_Quit();
                     ifTrue = false;

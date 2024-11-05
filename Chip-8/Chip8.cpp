@@ -32,6 +32,7 @@ void Chip8::init() {
 	I = 0;
 	sp = 0;
     drawFlag = false;
+    ifPressed = false;
 
     for (int i = 0; i < 16; ++i) { //clear the stack
         Stack[i] = 0;
@@ -320,21 +321,26 @@ void Chip8::execution_cycle() {
         case 0x000A: {
             bool keyPressed = false;
 
-            for (int i = 0; i < 16; i++)
-            {
-                if (key[i] != 0) {
-                    V[(opcode & 0x0F00) >> 8] = i;
-                    keyPressed = true;
-                    
+            if (ifPressed) {
+                if (key[V[(opcode & 0x0F00) >> 8]] == 0) {
+                    Pc += 2;
+                    break;
                 }
-
-            }//End of the loop
-            if (!keyPressed ) {
-                return;
-            } 
-            if (keyPressed) {
-                Pc += 2;
             }
+            else {
+                for (int i = 0; i < 16; i++)
+                {
+                    if (key[i] != 0) {
+                        V[(opcode & 0x0F00) >> 8] = i;
+                        keyPressed = true;
+                        ifPressed = true;
+                        return;
+
+                    }
+
+                }//End of the loop
+            }
+          
             
            
             break;

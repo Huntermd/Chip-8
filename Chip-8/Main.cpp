@@ -93,7 +93,9 @@ int WinMain() {
 
                 if (e.type == SDL_KEYUP) {
                     for (int i = 0; i < 16; i++){
-                        if (e.key.keysym.sym == keymap[i])chip8.key[i] = 0;
+                        if (e.key.keysym.sym == keymap[i]) {
+                            chip8.key[i] = 0; 
+}
                     }
                 }//End of the SDL_KeyUp if Statement
 

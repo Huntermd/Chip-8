@@ -11,7 +11,7 @@ public:
     void TestLoop();
     uint8_t Display[64 * 32];
     uint8_t  key[16];
-
+    bool ifPressed;
     Chip8();
     ~Chip8();
 

@@ -297,24 +297,44 @@ void Chip8::execution_cycle() {
     case 0xD000:
     {
         std::cout << "The big D" << '\n';
+        bool clipping = true;
         V[0xf] = 0;
         unsigned short x = V[(opcode & 0x0F00) >> 8];
         unsigned short y = V[(opcode & 0x00F0) >> 4];
+        if (clipping) {
+            x %= 64;
+            y %= 32;
+        }
+       
         unsigned short height = opcode & 0x000F;
         unsigned short pixels;
+        
+        int y_pos;
+        int x_pos;
         for (int y_axis = 0; y_axis < height; y_axis++) {
         
             pixels = Memory[I + y_axis];
             for (int x_axis = 0; x_axis < 8; x_axis++) {
                 
                 if ((pixels & (0x80 >> x_axis)) != 0) {
-                    unsigned short x_pos = (x + x_axis) % 64;
-                    unsigned short y_pos = (y + y_axis) % 32;
-                    if (Display[x_pos + (y_pos * 64)] == 1)
-                    {
-                        V[0xF] = 1;
+                   
+                     x_pos = (clipping) ? (x + x_axis) : (x + x_axis) % 64;
+                     y_pos = (clipping) ? (y + y_axis) : (y + y_axis) % 32;
+
+                    
+                  /*
+                   if (clipping && (x_pos >= 64 || y_pos >= 32)) {
+                        continue;
                     }
-                    Display[x_pos + (y_pos * 64)] ^= 1;
+                  */ 
+
+                    if (x_pos < 64 && y_pos < 32) {
+                        if (Display[x_pos + (y_pos * 64)] == 1)
+                        {
+                            V[0xF] = 1;
+                        }
+                        Display[x_pos + (y_pos * 64)] ^= 1;
+                    }
                 }
             }
 

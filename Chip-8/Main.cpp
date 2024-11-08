@@ -57,7 +57,7 @@ int WinMain() {
     const int timerFrequency = 1000 / 60;
 
 	
-	if (chip8.load("Space-Invaders.ch8")) {
+	if (chip8.load("5-quirks.ch8")) {
         auto lastTimerUpdate = std::chrono::high_resolution_clock::now();
 		while(ifTrue){
              SDL_Event e;
@@ -115,7 +115,7 @@ int WinMain() {
                 // This will show the new, red contents of the window.
                 SDL_RenderPresent(render);//Updates the window
         }// End of the DrawFlag if statement
-			std::this_thread::sleep_for(std::chrono::microseconds(1000));
+			std::this_thread::sleep_for(std::chrono::microseconds(500));
 		}//End of the Execution Loop
 	}//End the loaded if statement
     SDL_Delay(5000);

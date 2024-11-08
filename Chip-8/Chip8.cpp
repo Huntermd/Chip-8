@@ -122,6 +122,7 @@ void Chip8::execution_cycle() {
             Pc += 2;
             break;
         default:
+            std::cout << "Breakpoint" << '\n';
             break;
         }
         break;
@@ -206,16 +207,19 @@ void Chip8::execution_cycle() {
         }
         case 0x0001: {
             V[(opcode & 0x0F00) >> 8] |= V[(opcode & 0x00F0) >> 4];
+            V[0xF] = 0;//For the quirks test
             Pc += 2;
             break;
         }
         case 0x0002: {
             V[(opcode & 0x0F00) >> 8] &= V[(opcode & 0x00F0) >> 4];
+            V[0xF] = 0;//For the quirks test
             Pc += 2;
             break;
         }
         case 0x0003: {
             V[(opcode & 0x0F00) >> 8] ^= V[(opcode & 0x00F0) >> 4];
+            V[0xF] = 0;//For the quirks test
             Pc += 2;
             break;
         }
@@ -249,9 +253,8 @@ void Chip8::execution_cycle() {
             break;
         }
         case 0x0006: {
-            uint8_t ans = V[(opcode & 0x0F00) >> 8] & 0x01;
-            V[(opcode & 0x0F00) >> 8] >>= 1;
-            V[0xF] = ans;
+           V[0xF] = V[(opcode & 0x0F00) >> 8] & 0x01;
+            V[(opcode & 0x0F00) >> 8] = V[(opcode & 0x00F0) >> 4] >> 1;
             Pc += 2;
             break;
         }
@@ -270,13 +273,13 @@ void Chip8::execution_cycle() {
             break;
         }
         case 0x000E: {
-            uint8_t ans = V[(opcode & 0x0F00) >> 8] >> 7;
-            V[(opcode & 0x0F00) >> 8] <<= 1;
-            V[0xF] = ans;
+            V[0xF] = (V[(opcode & 0x0F00) >> 8] & 0x80) >> 7;
+            V[(opcode & 0x0F00) >> 8] = V[(opcode & 0x00F0) >> 4] << 1;
             Pc += 2;
             break;
         }
         default:
+            std::cout << "Breakpoint" << '\n';
             break;
         }
         break;
@@ -300,14 +303,18 @@ void Chip8::execution_cycle() {
         unsigned short height = opcode & 0x000F;
         unsigned short pixels;
         for (int y_axis = 0; y_axis < height; y_axis++) {
+        
             pixels = Memory[I + y_axis];
             for (int x_axis = 0; x_axis < 8; x_axis++) {
+                
                 if ((pixels & (0x80 >> x_axis)) != 0) {
-                    if (Display[x + x_axis + ((y + y_axis) * 64)] == 1)
+                    unsigned short x_pos = (x + x_axis) % 64;
+                    unsigned short y_pos = (y + y_axis) % 32;
+                    if (Display[x_pos + (y_pos * 64)] == 1)
                     {
                         V[0xF] = 1;
                     }
-                    Display[x + x_axis + ((y + y_axis) * 64)] ^= 1;
+                    Display[x_pos + (y_pos * 64)] ^= 1;
                 }
             }
 
@@ -322,8 +329,12 @@ void Chip8::execution_cycle() {
             bool keyPressed = false;
 
             if (ifPressed) {
+                if (SoundTimer == 0) {
+                    SoundTimer = 4;
+                }
                 if (key[V[(opcode & 0x0F00) >> 8]] == 0) {
                     Pc += 2;
+                    ifPressed = false;
                     break;
                 }
             }
@@ -434,6 +445,9 @@ void Chip8::execution_cycle() {
             }
         }
         default: {
+            unsigned short x = opcode;
+            std::cout << "Breakpoint" << x <<'\n';
+
             break;
         }
         }

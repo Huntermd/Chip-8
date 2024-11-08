@@ -34,5 +34,7 @@
     <None Include="4-flags.ch8" />
     <None Include="5-quirks.ch8" />
     <None Include="6-keypad.ch8" />
+    <None Include="Pong.ch8" />
+    <None Include="Space-Invaders.ch8" />
   </ItemGroup>
 </Project>

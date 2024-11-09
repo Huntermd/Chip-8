@@ -12,6 +12,12 @@ public:
     uint8_t Display[64 * 32];
     uint8_t  key[16];
     bool ifPressed;
+    bool clippingQuirk;
+    bool jumpingQuirk;
+    bool shiftingQuirk;
+    bool memoryQuirk;
+    bool vfQuirk;
+
     Chip8();
     ~Chip8();
 

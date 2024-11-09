@@ -33,7 +33,11 @@ void Chip8::init() {
 	sp = 0;
     drawFlag = false;
     ifPressed = false;
-
+    memoryQuirk = false;
+    jumpingQuirk = false;
+    clippingQuirk = false;
+    vfQuirk = false;
+    shiftingQuirk = false;
     for (int i = 0; i < 16; ++i) { //clear the stack
         Stack[i] = 0;
         V[i] = 0;
@@ -144,7 +148,11 @@ void Chip8::execution_cycle() {
         break;
     }
     case 0xB000: {
-        Pc = (opcode & 0x0FFF) + V[0];
+        if (jumpingQuirk) {
+            Pc = (opcode & 0x0FFF) + V[(opcode & 0x0F00) >> 8];
+       }else{
+            Pc = (opcode & 0x0FFF) + V[0];
+        }
         break;
     }
     case 0xC000: {
@@ -207,19 +215,25 @@ void Chip8::execution_cycle() {
         }
         case 0x0001: {
             V[(opcode & 0x0F00) >> 8] |= V[(opcode & 0x00F0) >> 4];
-            V[0xF] = 0;//For the quirks test
+            if (vfQuirk) {
+                V[0xF] = 0;//For the quirks test
+            }
             Pc += 2;
             break;
         }
         case 0x0002: {
             V[(opcode & 0x0F00) >> 8] &= V[(opcode & 0x00F0) >> 4];
-            V[0xF] = 0;//For the quirks test
+            if (vfQuirk) {
+                V[0xF] = 0;//For the quirks test
+            }
             Pc += 2;
             break;
         }
         case 0x0003: {
             V[(opcode & 0x0F00) >> 8] ^= V[(opcode & 0x00F0) >> 4];
-            V[0xF] = 0;//For the quirks test
+            if (vfQuirk) {
+                V[0xF] = 0;//For the quirks test
+            }
             Pc += 2;
             break;
         }
@@ -254,7 +268,11 @@ void Chip8::execution_cycle() {
         }
         case 0x0006: {
            V[0xF] = V[(opcode & 0x0F00) >> 8] & 0x01;
-            V[(opcode & 0x0F00) >> 8] = V[(opcode & 0x00F0) >> 4] >> 1;
+            if(shiftingQuirk){
+                V[(opcode & 0x0F00) >> 8] >>= 1;
+            }else {
+                V[(opcode & 0x0F00) >> 8] = V[(opcode & 0x00F0) >> 4] >> 1;
+            }
             Pc += 2;
             break;
         }
@@ -274,7 +292,11 @@ void Chip8::execution_cycle() {
         }
         case 0x000E: {
             V[0xF] = (V[(opcode & 0x0F00) >> 8] & 0x80) >> 7;
-            V[(opcode & 0x0F00) >> 8] = V[(opcode & 0x00F0) >> 4] << 1;
+            if (shiftingQuirk) {
+                V[(opcode & 0x0F00) >> 8] <<= 1;
+            }else {
+                V[(opcode & 0x0F00) >> 8] = V[(opcode & 0x00F0) >> 4] << 1;
+            }
             Pc += 2;
             break;
         }
@@ -297,7 +319,7 @@ void Chip8::execution_cycle() {
     case 0xD000:
     {
         std::cout << "The big D" << '\n';
-        bool clipping = true;
+        bool clipping = clippingQuirk;
         V[0xf] = 0;
         unsigned short x = V[(opcode & 0x0F00) >> 8];
         unsigned short y = V[(opcode & 0x00F0) >> 4];
@@ -384,7 +406,9 @@ void Chip8::execution_cycle() {
                     V[i] = Memory[I + i];
 
                 }
-                I = I + x + 1;
+                if (memoryQuirk) {
+                    I = I + x + 1;
+                }
                 Pc += 2;
                 break;
             }
@@ -396,7 +420,9 @@ void Chip8::execution_cycle() {
                     
 
                 }
-                I = I + x + 1;
+                if (memoryQuirk) {
+                    I = I + x + 1;
+                }
                 Pc += 2;
                 break;
             }

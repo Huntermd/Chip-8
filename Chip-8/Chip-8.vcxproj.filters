@@ -36,5 +36,11 @@
     <None Include="6-keypad.ch8" />
     <None Include="Pong.ch8" />
     <None Include="Space-Invaders.ch8" />
+    <None Include="7-beep.ch8" />
+  </ItemGroup>
+  <ItemGroup>
+    <Media Include="Nightmare.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
   </ItemGroup>
 </Project>

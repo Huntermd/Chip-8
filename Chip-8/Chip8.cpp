@@ -5,6 +5,7 @@
 #include <random>
 
 
+
 unsigned char FontSet[80] =
 {
     0xF0, 0x90, 0x90, 0x90, 0xF0, //0
@@ -33,6 +34,7 @@ void Chip8::init() {
 	sp = 0;
     drawFlag = false;
     ifPressed = false;
+    //Quirks
     memoryQuirk = false;
     jumpingQuirk = false;
     clippingQuirk = false;
@@ -57,6 +59,46 @@ void Chip8::init() {
     }
 }
 
+
+
+void Chip8::loadAudio(){
+    audioLoaded = false;
+    if (SDL_Init(SDL_INIT_AUDIO) < 0) {
+        std::cout << "hello\n";
+        return;
+    }
+
+    if (SDL_LoadWAV("Nightmare.wav", &wavSpec, &wavBuffer, &wavLength) == NULL) {
+        return;
+    }
+     deviceId = SDL_OpenAudioDevice(NULL, 0, &wavSpec, NULL, 0);
+    if (deviceId == 0) {
+        return;
+    }
+    int success = SDL_QueueAudio(deviceId, wavBuffer, wavLength);
+    if (success != 0) {
+        return;
+    }
+    audioLoaded = true;
+}
+
+void Chip8::playAudio(){
+    if(audioLoaded){
+        SDL_PauseAudioDevice(deviceId, 0);
+    }
+}
+
+void Chip8::pauseAudio(){
+    if (audioLoaded) {
+        SDL_PauseAudioDevice(deviceId, 1);
+    }
+}
+
+void Chip8::freeAudio(){
+    SDL_CloseAudioDevice(deviceId);
+    SDL_FreeWAV(wavBuffer);
+}
+
 void Chip8::updateTimers() {
     if (DelayTimer > 0) {
         DelayTimer--;
@@ -64,11 +106,16 @@ void Chip8::updateTimers() {
 
     if (SoundTimer > 0) {
         SoundTimer--;
+        playAudio();
+    }
+    else {
+        pauseAudio();
     }
 }
 
 bool Chip8::load(const char *fileName) {
     init();
+    loadAudio();
     std::ifstream file;
     std::streampos size; //streampos is the type returned by tellg()
     std::streampos begin;

@@ -8,6 +8,7 @@
 
 int WinMain() {
 	Chip8 chip8 = Chip8();
+
     uint8_t keymap[16] = {
     SDLK_x,
     SDLK_1,
@@ -31,6 +32,13 @@ int WinMain() {
         std::cout << "hello\n";
         return 1;
     }
+    
+    
+   
+  
+    bool audioOn = false;
+    // SDL_PauseAudioDevice(deviceId, 0);
+
     SDL_Window* window = SDL_CreateWindow("simple window",SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1024, 512, SDL_WINDOW_SHOWN);
     if (window == NULL)
     {
@@ -57,7 +65,7 @@ int WinMain() {
     const int timerFrequency = 1000 / 60;
 
 	
-	if (chip8.load("5-quirks.ch8")) {
+	if (chip8.load("7-beep.ch8")) {
         auto lastTimerUpdate = std::chrono::high_resolution_clock::now();
 		while(ifTrue){
              SDL_Event e;
@@ -119,6 +127,7 @@ int WinMain() {
 		}//End of the Execution Loop
 	}//End the loaded if statement
     SDL_Delay(5000);
+    chip8.freeAudio();
     SDL_DestroyRenderer(render);
     SDL_DestroyTexture(sdlTexture);
     SDL_DestroyWindow(window);
